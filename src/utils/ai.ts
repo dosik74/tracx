@@ -18,6 +18,10 @@ export const AI_SYSTEM_PROMPT = `Ты — фильтр задач для тре�
 
 /** Нормализация текста нейросетью. При любой ошибке — откат на локальные эвристики. */
 export async function normalizeWithAI(text: string): Promise<string[]> {
+  if (!GROQ_API_KEY) {
+    console.warn('Groq API key не задан, используется локальный режим.');
+    return normalizeMessage(text);
+  }
   try {
     const res = await fetch(GROQ_URL, {
       method: 'POST',
