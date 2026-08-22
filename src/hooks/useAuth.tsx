@@ -132,9 +132,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       },
       async signOut() {
+        if (!supabaseEnabled) return;
         await supabase.auth.signOut().catch(() => undefined);
       },
       async saveProfile(patch) {
+        if (!supabaseEnabled) return 'Supabase не подключён';
         if (!session?.user) return 'Нет сессии';
         try {
           const base: Profile = profile ?? {

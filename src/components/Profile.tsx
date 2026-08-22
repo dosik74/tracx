@@ -20,8 +20,7 @@ function StatCard({ icon: Icon, label, value }: { icon: typeof ListTodo; label: 
 }
 
 export default function Profile({ tasks }: { tasks: Task[] }) {
-  const { user, profile, saveProfile, signOut } = useAuth();
-  const [name, setName] = useState('');
+  const { user, profile, saveProfile, signOut } = useAuth();  const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const [emoji, setEmoji] = useState('🙂');
   const [color, setColor] = useState(COLORS[0]);
@@ -100,13 +99,15 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
           <p className="text-sm text-zinc-500">@{profile?.username ?? user?.email?.split('@')[0]}</p>
           {profile?.bio && <p className="mt-1 text-sm text-zinc-400">{profile.bio}</p>}
         </div>
-        <button
-          onClick={() => void signOut()}
-          className="ml-auto flex shrink-0 items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-xs font-medium text-zinc-400 transition hover:border-red-500/50 hover:text-red-400"
-          title="Выйти из аккаунта"
-        >
-          <LogOut className="h-4 w-4" /> Выйти
-        </button>
+        {user && (
+          <button
+            onClick={() => void signOut()}
+            className="ml-auto flex shrink-0 items-center gap-2 rounded-xl border border-zinc-800 px-3 py-2 text-xs font-medium text-zinc-400 transition hover:border-red-500/50 hover:text-red-400"
+            title="Выйти из аккаунта"
+          >
+            <LogOut className="h-4 w-4" /> Выйти
+          </button>
+        )}
       </div>
 
       {/* Кастомизация */}
