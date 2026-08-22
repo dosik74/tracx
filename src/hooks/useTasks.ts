@@ -4,7 +4,7 @@ import { supabase, supabaseEnabled } from '../utils/supabase';
 
 const STORAGE_KEY = 'task-tracker:data:v1';
 
-/** Р‘Р” -> РїСЂРёР»РѕР¶РµРЅРёРµ */
+/** БД -> приложение */
 function rowToTask(r: Record<string, unknown>): Task {
   return {
     id: String(r.id),
@@ -16,9 +16,10 @@ function rowToTask(r: Record<string, unknown>): Task {
   };
 }
 
-/** РџСЂРёР»РѕР¶РµРЅРёРµ -> Р‘Р” */
-function taskToRow(t: Task) {
+/** Приложение -> БД */
+function taskToRow(t: Task, userId?: string) {
   return {
+    user_id: userId ?? null,
     id: t.id,
     text: t.text,
     done: t.done,
@@ -42,7 +43,7 @@ function loadLocal(): Task[] {
         typeof (t as Task).text === 'string'
     );
   } catch (err) {
-    console.error('РќРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕС‡РёС‚Р°С‚СЊ РґР°РЅРЅС‹Рµ РёР· LocalStorage:', err);
+    console.error('Не удалось прочитать данные из LocalStorage:', err);
     return [];
   }
 }
@@ -64,39 +65,44 @@ function runSync(op: () => PromiseLike<{ error: { message: string } | null }>): 
     }
   })();
 }
-export function useTasks() {
+
+export function useTasks(userId: string | undefined) {
   const [tasks, setTasks] = useState<Task[]>(loadLocal);
 
-  // Р›РѕРєР°Р»СЊРЅС‹Р№ РєСЌС€ вЂ” РІСЃРµРіРґР°
+  // Локальный кэш — всегда
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     } catch (err) {
-      console.error('РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ РґР°РЅРЅС‹Рµ РІ LocalStorage:', err);
+      console.error('Не удалось сохранить данные в LocalStorage:', err);
     }
   }, [tasks]);
 
-  // РџРµСЂРІРёС‡РЅР°СЏ Р·Р°РіСЂСѓР·РєР° РёР· Supabase Рё СЃР»РёСЏРЅРёРµ СЃ РєСЌС€РµРј
+  // Загрузка из Supabase и слияние с кэшем (при входе/смене пользователя)
   useEffect(() => {
-    if (!supabaseEnabled) return;
+    if (!supabaseEnabled || !userId) return;
+    let cancelled = false;
     (async () => {
       try {
-        const { data, error } = await supabase.from('tasks').select('*');
+        const { data, error } = await supabase.from('tasks').select('*').eq('user_id', userId);
         if (error) throw error;
-        if (!data) return;
+        if (!data || cancelled) return;
         const remote = data.map(rowToTask).filter(t => t.text);
         setTasks(prev => {
           const byId = new Map(prev.map(t => [t.id, t]));
-          for (const rt of remote) byId.set(rt.id, rt); // РѕР±Р»Р°С‡РЅР°СЏ РІРµСЂСЃРёСЏ РїСЂРёРѕСЂРёС‚РµС‚РЅР°
+          for (const rt of remote) byId.set(rt.id, rt); // облачная версия приоритетна
           return [...byId.values()].sort((a, b) =>
             a.done !== b.done ? (a.done ? 1 : -1) : a.date < b.date ? -1 : 1
           );
         });
       } catch (err) {
-        console.warn('Supabase РЅРµРґРѕСЃС‚СѓРїРµРЅ, СЂР°Р±РѕС‚Р°РµРј РѕС„Р»Р°Р№РЅ:', err);
+        console.warn('Supabase недоступен, работаем офлайн:', err);
       }
     })();
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
 
   const api = useMemo(
     () => ({
@@ -114,8 +120,8 @@ export function useTasks() {
             completedAt: null,
           }));
         setTasks(prev => [...fresh, ...prev]);
-        if (supabaseEnabled && fresh.length > 0) {
-          runSync(() => supabase.from('tasks').insert(fresh.map(taskToRow)));
+        if (supabaseEnabled && userId && fresh.length > 0) {
+          runSync(() => supabase.from('tasks').insert(fresh.map(t => taskToRow(t, userId))));
         }
       },
       toggle(id: string) {
@@ -127,12 +133,13 @@ export function useTasks() {
               done: !t.done,
               completedAt: !t.done ? new Date().toISOString() : null,
             };
-            if (supabaseEnabled) {
+            if (supabaseEnabled && userId) {
               runSync(() =>
                 supabase
                   .from('tasks')
                   .update({ done: next.done, completed_at: next.completedAt })
                   .eq('id', id)
+                  .eq('user_id', userId)
               );
             }
             return next;
@@ -150,8 +157,10 @@ export function useTasks() {
                 : next.done
                   ? t.completedAt
                   : null;
-            if (supabaseEnabled) {
-              runSync(() => supabase.from('tasks').update(taskToRow(next)).eq('id', id));
+            if (supabaseEnabled && userId) {
+              runSync(() =>
+                supabase.from('tasks').update(taskToRow(next, userId)).eq('id', id).eq('user_id', userId)
+              );
             }
             return next;
           })
@@ -159,17 +168,19 @@ export function useTasks() {
       },
       remove(id: string) {
         setTasks(prev => prev.filter(t => t.id !== id));
-        if (supabaseEnabled) {
-          runSync(() => supabase.from('tasks').delete().eq('id', id));
+        if (supabaseEnabled && userId) {
+          runSync(() => supabase.from('tasks').delete().eq('id', id).eq('user_id', userId));
         }
       },
       async replaceAll(next: Task[]) {
         setTasks(next);
-        if (!supabaseEnabled) return;
+        if (!supabaseEnabled || !userId) return;
         try {
-          await supabase.from('tasks').delete().neq('id', '');
+          await supabase.from('tasks').delete().eq('user_id', userId);
           if (next.length > 0) {
-            const { error } = await supabase.from('tasks').insert(next.map(taskToRow));
+            const { error } = await supabase
+              .from('tasks')
+              .insert(next.map(t => taskToRow(t, userId)));
             if (error) throw error;
           }
         } catch (err) {
@@ -179,18 +190,19 @@ export function useTasks() {
       clearCompleted() {
         setTasks(prev => {
           const ids = prev.filter(t => t.done).map(t => t.id);
-          if (supabaseEnabled && ids.length > 0) {
-            runSync(() => supabase.from('tasks').delete().in('id', ids));
+          if (supabaseEnabled && userId && ids.length > 0) {
+            runSync(() =>
+              supabase.from('tasks').delete().in('id', ids).eq('user_id', userId)
+            );
           }
           return prev.filter(t => !t.done);
         });
       },
     }),
-    []
+    [userId]
   );
 
   return { tasks, ...api };
 }
 
 export type TasksApi = ReturnType<typeof useTasks>;
-

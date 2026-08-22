@@ -1,5 +1,6 @@
 import { CheckSquare, ListTodo, CalendarDays, User, Download, ShieldCheck, Settings } from 'lucide-react';
 import type { Tab } from '../types';
+import { useAuth } from '../hooks/useAuth';
 
 interface Props {
   tab: Tab;
@@ -16,6 +17,7 @@ const items: { id: Tab; label: string; icon: typeof CheckSquare }[] = [
 ];
 
 export default function Sidebar({ tab, onChange, onExport }: Props) {
+  const { user, profile } = useAuth();
   return (
     <aside className="flex h-full w-16 shrink-0 flex-col gap-2 border-r border-zinc-800 bg-zinc-950 p-3 md:w-56">
       <div className="mb-4 hidden items-center gap-2 px-2 md:flex">
@@ -40,9 +42,32 @@ export default function Sidebar({ tab, onChange, onExport }: Props) {
           </button>
         ))}
       </div>
+
+      {/* Пользователь */}
+      {user && (
+        <button
+          onClick={() => onChange('profile')}
+          className="mt-auto flex flex-col items-center gap-1.5 rounded-xl px-2 py-2 transition hover:bg-zinc-800/70 md:flex-row md:px-3"
+          title="Профиль"
+        >
+          <span
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg"
+            style={{ backgroundColor: `${profile?.avatar_color ?? '#10b981'}33` }}
+          >
+            {profile?.avatar_emoji || '🙂'}
+          </span>
+          <span className="hidden min-w-0 flex-1 text-left md:block">
+            <span className="block truncate text-xs font-medium text-zinc-200">
+              {profile?.display_name || profile?.username || 'Профиль'}
+            </span>
+            <span className="block truncate text-[10px] text-zinc-500">@{profile?.username ?? 'user'}</span>
+          </span>
+        </button>
+      )}
+
       <button
         onClick={onExport}
-        className="mt-auto flex flex-col items-center gap-1 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-800/70 hover:text-zinc-300 md:flex-row"
+        className={`${user ? '' : 'mt-auto'} flex flex-col items-center gap-1 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-800/70 hover:text-zinc-300 md:flex-row`}
         title="Скачать резервную копию (JSON)"
       >
         <Download className="h-5 w-5" />

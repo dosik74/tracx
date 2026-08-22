@@ -2,8 +2,10 @@ import { useState } from 'react';
 import type { Tab } from './types';
 import { useTasks } from './hooks/useTasks';
 import { SettingsProvider, useSettings } from './hooks/useSettings';
+import { AuthProvider, useAuth } from './hooks/useAuth';
 import { exportBackup } from './utils/backup';
 import { today } from './utils/date';
+import { supabaseEnabled } from './utils/supabase';
 import Sidebar from './components/Sidebar';
 import TaskInput from './components/TaskInput';
 import TaskList from './components/TaskList';
@@ -11,10 +13,13 @@ import CalendarTab from './components/CalendarTab';
 import Profile from './components/Profile';
 import BackupManager from './components/BackupManager';
 import SettingsPage from './components/SettingsPage';
+import AuthPage from './components/AuthPage';
+import { Loader2 } from 'lucide-react';
 
 function Shell() {
   const [tab, setTab] = useState<Tab>('tasks');
-  const store = useTasks();
+  const { user } = useAuth();
+  const store = useTasks(user?.id);
   const { tasks } = store;
   const { settings } = useSettings();
 
@@ -78,10 +83,27 @@ function Shell() {
   );
 }
 
+function Gate() {
+  const { session, loading } = useAuth();
+
+  if (!supabaseEnabled) return <Shell />; // офлайн-режим без базы
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-zinc-950">
+        <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
+      </div>
+    );
+  }
+  if (!session) return <AuthPage />;
+  return <Shell />;
+}
+
 export default function App() {
   return (
-    <SettingsProvider>
-      <Shell />
-    </SettingsProvider>
+    <AuthProvider>
+      <SettingsProvider>
+        <Gate />
+      </SettingsProvider>
+    </AuthProvider>
   );
 }
