@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ListFilter, Trash, ListTodo } from 'lucide-react';
 import type { DayFilter, Task, TaskStatus } from '../types';
 import type { TasksApi } from '../hooks/useTasks';
+import { useSettings } from '../hooks/useSettings';
 import TaskItem from './TaskItem';
 import { today, tomorrow } from '../utils/date';
 
@@ -14,6 +15,7 @@ export default function TaskList({ tasks, api }: Props) {
   const [dayFilter, setDayFilter] = useState<DayFilter>('all');
   const [customDate, setCustomDate] = useState(today());
   const [status, setStatus] = useState<TaskStatus>('all');
+  const { settings } = useSettings();
 
   const filtered = useMemo(() => {
     return tasks
@@ -23,13 +25,18 @@ export default function TaskList({ tasks, api }: Props) {
         if (dayFilter === 'custom') return t.date === customDate;
         return true;
       })
-      .filter(t => (status === 'all' ? true : status === 'done' ? t.done : !t.done))
+      .filter(t => {
+        if (status !== 'all') return status === 'done' ? t.done : !t.done;
+        // Приватность: выполненные скрываются из общего списка
+        if (settings.hideCompleted && t.done) return false;
+        return true;
+      })
       .sort((a, b) => {
         if (a.done !== b.done) return a.done ? 1 : -1;
         if (a.date !== b.date) return a.date < b.date ? -1 : 1;
         return a.createdAt < b.createdAt ? 1 : -1;
       });
-  }, [tasks, dayFilter, customDate, status]);
+  }, [tasks, dayFilter, customDate, status, settings.hideCompleted]);
 
   const doneCount = filtered.filter(t => t.done).length;
   const pct = filtered.length === 0 ? 0 : Math.round((doneCount / filtered.length) * 100);

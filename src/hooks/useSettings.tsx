@@ -12,6 +12,10 @@ export interface Settings {
   inputGlow: boolean;
   /** Переходы между вкладками */
   tabTransition: boolean;
+  /** Приватный режим: размывать текст выполненных задач */
+  blurCompleted: boolean;
+  /** Скрывать выполненные задачи из общего списка */
+  hideCompleted: boolean;
   /** Все анимации сразу */
   allEnabled: boolean;
 }
@@ -22,6 +26,8 @@ const DEFAULTS: Settings = {
   removeFlash: true,
   inputGlow: true,
   tabTransition: true,
+  blurCompleted: false,
+  hideCompleted: false,
   allEnabled: true,
 };
 
@@ -74,6 +80,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
               removeFlash: on,
               inputGlow: on,
               tabTransition: on,
+              blurCompleted: prev.blurCompleted,
+              hideCompleted: prev.hideCompleted,
               allEnabled: on,
             };
           }

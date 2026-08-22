@@ -10,6 +10,10 @@ export interface Profile {
   bio: string | null;
   avatar_emoji: string;
   avatar_color: string;
+  /** Фото/GIF-аватар (data URL) */
+  avatar_image: string | null;
+  /** Фон профиля (data URL) */
+  cover_image: string | null;
 }
 
 interface AuthCtx {
@@ -92,6 +96,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               bio: null,
               avatar_emoji: '🙂',
               avatar_color: '#10b981',
+              avatar_image: null,
+              cover_image: null,
             };
           }
           setProfile(data);
@@ -146,6 +152,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             bio: null,
             avatar_emoji: '🙂',
             avatar_color: '#10b981',
+            avatar_image: null,
+            cover_image: null,
           };
           const next: Profile = { ...base, ...patch, id: session.user.id };
           const { error } = await supabase

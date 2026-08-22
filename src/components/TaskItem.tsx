@@ -123,13 +123,13 @@ export default function TaskItem({ task, onToggle, onUpdate, onRemove }: Props) 
         ) : (
           <>
             <div className="min-w-0 flex-1">
-              <p
-                className={`break-words whitespace-pre-wrap text-[17px] leading-relaxed font-medium transition-all duration-300 ${
-                  task.done ? 'text-zinc-500 line-through decoration-emerald-500/50' : 'text-zinc-100'
-                }`}
-              >
-                {task.text}
-              </p>
+            <p
+              className={`break-words whitespace-pre-wrap text-[17px] leading-relaxed font-medium transition-all duration-300 ${
+                task.done ? 'text-zinc-500 line-through decoration-emerald-500/50' : 'text-zinc-100'
+              } ${task.done && settings.blurCompleted ? 'blur-sm hover:blur-none select-none' : ''}`}
+            >
+              {task.text}
+            </p>
               <span
                 className={`mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                   task.done

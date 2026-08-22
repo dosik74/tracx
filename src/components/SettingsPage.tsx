@@ -1,4 +1,4 @@
-import { Sparkles, Eye, CheckSquare, Trash2, Sun, ArrowLeftRight, Power } from 'lucide-react';
+import { Sparkles, Eye, EyeOff, CheckSquare, Trash2, Sun, ArrowLeftRight, Power } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
 import type { Settings as SettingsState } from '../hooks/useSettings';
 
@@ -37,6 +37,18 @@ const TOGGLES: {
     label: 'Переходы между вкладками',
     description: 'Контент плавно всплывает при смене раздела',
     icon: ArrowLeftRight,
+  },
+  {
+    key: 'blurCompleted',
+    label: 'Приватный режим выполненных',
+    description: 'Текст выполненных задач размывается — наведите, чтобы прочитать',
+    icon: EyeOff,
+  },
+  {
+    key: 'hideCompleted',
+    label: 'Скрывать выполненные',
+    description: 'Выполненные задачи не показываются в списке (кроме фильтра «Выполненные»)',
+    icon: Eye,
   },
 ];
 
