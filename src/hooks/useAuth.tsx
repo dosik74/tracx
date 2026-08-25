@@ -22,6 +22,7 @@ interface AuthCtx {
   profile: Profile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<string | null>;
+  signInWithGoogle: () => Promise<string | null>;
   signUp: (email: string, password: string, username: string) => Promise<string | null>;
   signOut: () => Promise<void>;
   saveProfile: (patch: Partial<Profile>) => Promise<string | null>;
@@ -33,6 +34,7 @@ const Ctx = createContext<AuthCtx>({
   profile: null,
   loading: true,
   signIn: async () => 'Supabase не подключён',
+  signInWithGoogle: async () => 'Supabase не подключён',
   signUp: async () => 'Supabase не подключён',
   signOut: async () => undefined,
   saveProfile: async () => 'Supabase не подключён',
@@ -119,6 +121,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return error ? translateAuthError(error.message) : null;
         } catch (err) {
           return err instanceof Error ? err.message : 'Ошибка входа';
+        }
+      },
+      async signInWithGoogle() {
+        if (!supabaseEnabled) return 'Supabase не подключён';
+        try {
+          const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: window.location.origin },
+          });
+          return error ? translateAuthError(error.message) : null;
+        } catch (err) {
+          return err instanceof Error ? err.message : 'Ошибка входа через Google';
         }
       },
       async signUp(email, password, username) {

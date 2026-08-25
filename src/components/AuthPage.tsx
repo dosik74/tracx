@@ -3,7 +3,7 @@ import { Mail, Lock, User as UserIcon, LogIn, UserPlus, Loader2, ShieldCheck } f
 import { useAuth } from '../hooks/useAuth';
 
 export default function AuthPage() {
-  const { signIn, signUp } = useAuth();
+  const { signIn, signInWithGoogle, signUp } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,6 +30,15 @@ export default function AuthPage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function signInGoogle() {
+    setError(null);
+    setNotice(null);
+    setBusy(true);
+    const err = await signInWithGoogle();
+    if (err) setError(err);
+    setBusy(false);
   }
 
   const inputCls =
@@ -113,6 +122,22 @@ export default function AuthPage() {
               {mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
             </button>
           </form>
+
+          <div className="my-4 flex items-center gap-3 text-xs text-zinc-600">
+            <span className="h-px flex-1 bg-zinc-800" />
+            <span>или</span>
+            <span className="h-px flex-1 bg-zinc-800" />
+          </div>
+
+          <button
+            type="button"
+            onClick={signInGoogle}
+            disabled={busy}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-2.5 text-sm font-semibold text-zinc-100 transition hover:border-zinc-600 hover:bg-zinc-700 disabled:opacity-40"
+          >
+            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[#4285f4]">G</span>
+            {mode === 'login' ? 'Войти через Google' : 'Зарегистрироваться через Google'}
+          </button>
 
           <button
             onClick={() => {
