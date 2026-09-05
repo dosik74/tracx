@@ -27,7 +27,7 @@ function Shell() {
     switch (tab) {
       case 'tasks':
         return (
-          <div className="mx-auto flex min-h-full w-full max-w-3xl items-center justify-center px-1 py-6">
+            <div className="mx-auto flex min-h-full w-full max-w-3xl items-center justify-center px-1 py-6 md:min-h-[calc(100dvh-4rem)] md:items-start md:pt-[18vh]">
             <div className="w-full space-y-6 sm:space-y-8">
               <div className="space-y-3 sm:space-y-4">
                 <h1 className="font-monplesir text-center text-6xl font-normal tracking-wide text-zinc-100 [text-shadow:0_6px_32px_rgba(0,0,0,1)] sm:text-8xl md:text-9xl">
