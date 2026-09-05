@@ -139,19 +139,20 @@ export default function TaskInput({ defaultDate, onAdd, onAdded }: Props) {
               ? 'Нейросеть обрабатывает текст…'
               : 'Вставьте сообщение клиента или напишите задачу…'
           }
-          className="w-full resize-none bg-transparent px-5 pt-4 text-[15px] leading-relaxed text-zinc-100 placeholder-zinc-500 outline-none"
+          className="w-full resize-none bg-transparent px-4 pt-4 text-base leading-relaxed text-zinc-100 placeholder-zinc-500 outline-none sm:px-5"
         />
 
         {/* Нижняя панель инструментов */}
-        <div className="flex flex-wrap items-center gap-2 border-t border-zinc-800/80 px-3 py-2.5">
-          <button
-            onClick={() => setAutoFix(v => !v)}
-            disabled={processing}
-            className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
-              autoFix
-                ? 'bg-emerald-500/15 text-emerald-400'
-                : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300'
-            }`}
+        <div className="space-y-2 border-t border-zinc-800/80 px-3 py-2.5">
+          <div className="flex items-center gap-1.5 overflow-x-auto">
+            <button
+              onClick={() => setAutoFix(v => !v)}
+              disabled={processing}
+              className={`flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-medium transition active:scale-95 ${
+                autoFix
+                  ? 'bg-emerald-500/15 text-emerald-400'
+                  : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300'
+              }`}
             title={
               autoFix
                 ? 'Авторегулировка включена: нейросеть превращает сообщения в задачи. Нажмите, чтобы выключить.'
@@ -166,12 +167,12 @@ export default function TaskInput({ defaultDate, onAdd, onAdded }: Props) {
             AI {autoFix ? 'вкл' : 'выкл'}
           </button>
 
-          <div className="mx-1 h-4 w-px bg-zinc-800" />
+          <div className="mx-1 h-4 w-px shrink-0 bg-zinc-800" />
 
           <CalendarDays className="h-4 w-4 shrink-0 text-zinc-500" />
           <button
             onClick={() => setDate(today())}
-            className={`rounded-lg px-2 py-1.5 text-xs font-medium transition ${
+            className={`shrink-0 rounded-lg px-2.5 py-2 text-xs font-medium transition active:scale-95 ${
               date === today() ? 'bg-emerald-500/15 text-emerald-400' : 'text-zinc-500 hover:text-zinc-200'
             }`}
           >
@@ -179,7 +180,7 @@ export default function TaskInput({ defaultDate, onAdd, onAdded }: Props) {
           </button>
           <button
             onClick={() => setDate(tomorrow())}
-            className={`rounded-lg px-2 py-1.5 text-xs font-medium transition ${
+            className={`shrink-0 rounded-lg px-2.5 py-2 text-xs font-medium transition active:scale-95 ${
               date === tomorrow() ? 'bg-emerald-500/15 text-emerald-400' : 'text-zinc-500 hover:text-zinc-200'
             }`}
           >
@@ -189,12 +190,13 @@ export default function TaskInput({ defaultDate, onAdd, onAdded }: Props) {
             type="date"
             value={date}
             onChange={e => e.target.value && setDate(e.target.value)}
-            className="rounded-lg bg-transparent px-1 py-1 text-xs text-zinc-400 outline-none [color-scheme:dark]"
+            className="min-h-[40px] shrink-0 rounded-lg bg-transparent px-1 py-2 text-xs text-zinc-400 outline-none [color-scheme:dark]"
           />
-          <span className="hidden text-xs text-zinc-600 sm:inline">·</span>
-          <span className="hidden text-xs text-zinc-500 md:inline">{humanDate(date)}</span>
+          <span className="hidden shrink-0 text-xs text-zinc-500 lg:inline">{humanDate(date)}</span>
+          </div>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            <span className="min-w-0 flex-1 truncate text-xs text-zinc-500 lg:hidden">{humanDate(date)}</span>
             <button
               onClick={() => {
                 navigator.clipboard
@@ -206,15 +208,16 @@ export default function TaskInput({ defaultDate, onAdd, onAdded }: Props) {
                   })
                   .catch(() => undefined);
               }}
-              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-200"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg px-2.5 py-2 text-xs font-medium text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-200 active:scale-95"
               title="Вставить из буфера обмена"
+              aria-label="Вставить из буфера обмена"
             >
               <ClipboardPaste className="h-4 w-4" />
             </button>
             <button
               onClick={() => void submit()}
               disabled={lines.length === 0 || processing}
-              className="flex items-center gap-2 rounded-lg bg-emerald-500 px-3.5 py-1.5 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-30 sm:flex-none sm:px-5"
             >
               {processing ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />

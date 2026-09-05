@@ -10,11 +10,11 @@ const COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#ef4444'
 
 function StatCard({ icon: Icon, label, value }: { icon: typeof ListTodo; label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div className="min-w-0 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 sm:p-5">
       <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15">
         <Icon className="h-5 w-5 text-emerald-400" />
       </div>
-      <p className="text-2xl font-bold text-zinc-100">{value}</p>
+      <p className="truncate text-xl font-bold text-zinc-100 sm:text-2xl">{value}</p>
       <p className="mt-1 text-xs text-zinc-500">{label}</p>
     </div>
   );
@@ -105,7 +105,7 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
   const maxDay = Math.max(1, ...last7.map(d => d.count));
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto w-full max-w-3xl space-y-4 sm:space-y-6">
       {/* Карточка профиля с фоном */}
       <div
         className="relative overflow-hidden rounded-2xl border border-zinc-800"
@@ -119,9 +119,9 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
             : { backgroundColor: '#18181b' }
         }
       >
-        <div className="flex items-end gap-5 p-6 pt-16">
+        <div className="flex items-end gap-4 p-4 pt-14 sm:gap-5 sm:p-6 sm:pt-16">
           <div
-            className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full text-4xl shadow-lg ring-4 ring-zinc-900"
+            className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full text-3xl shadow-lg ring-4 ring-zinc-900 sm:h-24 sm:w-24 sm:text-4xl"
             style={{ backgroundColor: `${color}33`, boxShadow: `0 0 24px ${color}44` }}
           >
             {profile?.avatar_image ? (
@@ -131,17 +131,18 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
             )}
           </div>
           <div className="min-w-0 flex-1 pb-1">
-            <h1 className="truncate text-2xl font-bold text-zinc-100">
+            <h1 className="truncate text-xl font-bold text-zinc-100 sm:text-2xl">
               {profile?.display_name || profile?.username || 'Профиль'}
             </h1>
-            <p className="text-sm text-zinc-400">@{profile?.username ?? user?.email?.split('@')[0]}</p>
-            {profile?.bio && <p className="mt-1 text-sm text-zinc-300">{profile.bio}</p>}
+            <p className="truncate text-sm text-zinc-400">@{profile?.username ?? user?.email?.split('@')[0]}</p>
+            {profile?.bio && <p className="mt-1 break-words text-sm text-zinc-300">{profile.bio}</p>}
           </div>
           {user && (
             <button
               onClick={() => void signOut()}
-              className="shrink-0 self-start rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-xs font-medium text-zinc-300 backdrop-blur transition hover:border-red-500/50 hover:text-red-400"
+              className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center self-start rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-xs font-medium text-zinc-300 backdrop-blur transition hover:border-red-500/50 hover:text-red-400 active:scale-95"
               title="Выйти из аккаунта"
+              aria-label="Выйти из аккаунта"
             >
               <LogOut className="h-4 w-4" />
             </button>
@@ -150,7 +151,7 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
       </div>
 
       {/* Кастомизация */}
-      <div className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <div className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 sm:p-6">
         <h2 className="text-sm font-semibold text-zinc-300">Кастомизация профиля</h2>
 
         {/* Аватар и фон */}
@@ -258,7 +259,7 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
             onChange={e => setName(e.target.value)}
             maxLength={40}
             placeholder="Как вас показывать"
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-emerald-500"
+            className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-base text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-emerald-500"
           />
         </label>
 
@@ -270,7 +271,7 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
             maxLength={160}
             rows={2}
             placeholder="Пара слов о себе…"
-            className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-emerald-500"
+            className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-base text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-emerald-500"
           />
         </label>
 
@@ -281,7 +282,8 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
               <button
                 key={e}
                 onClick={() => setEmoji(e)}
-                className={`flex h-10 w-10 items-center justify-center rounded-xl text-xl transition ${
+                aria-label={`Аватар ${e}`}
+                className={`flex h-11 w-11 items-center justify-center rounded-xl text-xl transition active:scale-95 ${
                   emoji === e ? 'ring-2 ring-emerald-500 bg-emerald-500/15 scale-110' : 'bg-zinc-800/70 hover:bg-zinc-800'
                 }`}
               >
@@ -299,7 +301,8 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
                 key={c}
                 onClick={() => setColor(c)}
                 style={{ backgroundColor: c }}
-                className={`h-9 w-9 rounded-xl transition ${
+                aria-label={`Цвет ${c}`}
+                className={`h-11 w-11 rounded-xl transition active:scale-95 ${
                   color === c ? 'ring-2 ring-offset-2 ring-offset-zinc-900 ring-white/80 scale-110' : 'opacity-70 hover:opacity-100'
                 }`}
               />
@@ -310,7 +313,7 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
         <button
           onClick={() => void handleSave()}
           disabled={saving}
-          className="flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-400 disabled:opacity-40"
+          className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-400 active:scale-[0.98] disabled:opacity-40 sm:w-auto"
         >
           {saved ? <CheckCircle2 className="h-4 w-4" /> : <Save className="h-4 w-4" />}
           {saving ? 'Сохранение…' : saved ? 'Сохранено!' : 'Сохранить профиль'}
@@ -318,7 +321,7 @@ export default function Profile({ tasks }: { tasks: Task[] }) {
       </div>
 
       {/* Статистика */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard icon={ListTodo} label="Всего задач" value={String(stats.total)} />
         <StatCard icon={CheckCircle2} label={`Выполнено (${stats.done})`} value={`${stats.pct}%`} />
         <StatCard icon={Flame} label="За неделю" value={`${stats.weekDone} из ${stats.weekCreated}`} />

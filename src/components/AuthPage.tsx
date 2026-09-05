@@ -42,17 +42,17 @@ export default function AuthPage() {
   }
 
   const inputCls =
-    'w-full rounded-xl border border-zinc-700 bg-zinc-900 pl-10 pr-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-emerald-500';
+    'w-full rounded-xl border border-zinc-700 bg-zinc-900 pl-10 pr-4 py-3 text-base text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-emerald-500';
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-950 p-4">
+    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-zinc-950 p-4 pb-[env(safe-area-inset-bottom)]">
       {/* Фоновое свечение */}
       <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 h-96 w-[36rem] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl" />
 
       <div className="anim-tab-in relative w-full max-w-sm">
-        <div className="mb-8 text-center">
+        <div className="mb-6 text-center sm:mb-8">
           <ShieldCheck className="mx-auto mb-3 h-12 w-12 text-emerald-400" />
-          <h1 className="font-monplesir text-6xl text-zinc-100 [text-shadow:0_6px_32px_rgba(0,0,0,1)]">
+          <h1 className="font-monplesir text-5xl text-zinc-100 [text-shadow:0_6px_32px_rgba(0,0,0,1)] sm:text-6xl">
             tracx
           </h1>
           <p className="mt-2 text-sm text-zinc-500">
@@ -110,7 +110,7 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={busy}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-400 disabled:opacity-40"
+              className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-400 active:scale-[0.98] disabled:opacity-40"
             >
               {busy ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -133,7 +133,7 @@ export default function AuthPage() {
             type="button"
             onClick={signInGoogle}
             disabled={busy}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-2.5 text-sm font-semibold text-zinc-100 transition hover:border-zinc-600 hover:bg-zinc-700 disabled:opacity-40"
+            className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm font-semibold text-zinc-100 transition hover:border-zinc-600 hover:bg-zinc-700 active:scale-[0.98] disabled:opacity-40"
           >
             <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[#4285f4]">G</span>
             {mode === 'login' ? 'Войти через Google' : 'Зарегистрироваться через Google'}
@@ -145,7 +145,7 @@ export default function AuthPage() {
               setError(null);
               setNotice(null);
             }}
-            className="mt-4 w-full text-center text-xs text-zinc-500 transition hover:text-emerald-400"
+            className="mt-4 min-h-[44px] w-full px-2 py-2.5 text-center text-xs text-zinc-500 transition hover:text-emerald-400"
           >
             {mode === 'login' ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}
           </button>

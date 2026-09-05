@@ -62,16 +62,15 @@ function Toggle({
   return (
     <button
       onClick={onClick}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200 ${
-        on ? 'bg-emerald-500' : 'bg-zinc-700'
-      }`}
+      className="relative h-8 w-14 shrink-0 rounded-full transition-colors duration-200 active:scale-95"
+      style={{ backgroundColor: on ? '#10b981' : '#3f3f46' }}
       role="switch"
       aria-checked={on}
+      aria-label="Переключить"
     >
       <span
-        className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-transform duration-200 ${
-          on ? 'translate-x-[22px]' : 'translate-x-0.5'
-        }`}
+        className="absolute top-1 h-6 w-6 rounded-full bg-white shadow-md transition-transform duration-200"
+        style={{ transform: on ? 'translateX(30px)' : 'translateX(4px)' }}
       />
     </button>
   );
@@ -81,11 +80,11 @@ export default function SettingsPage() {
   const { settings, toggle } = useSettings();
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5">
-      <h1 className="text-2xl font-bold text-zinc-100">Настройки</h1>
+    <div className="mx-auto w-full max-w-2xl space-y-4 sm:space-y-5">
+      <h1 className="text-xl font-bold text-zinc-100 sm:text-2xl">Настройки</h1>
 
-      <div className="flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5">
-        <div>
+      <div className="flex items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 sm:p-5">
+        <div className="min-w-0 flex-1">
           <p className="flex items-center gap-2 text-sm font-semibold text-emerald-400">
             <Power className="h-4 w-4" /> Все анимации
           </p>
@@ -100,7 +99,7 @@ export default function SettingsPage() {
         {TOGGLES.map(({ key, label, description, icon: Icon }) => (
           <div
             key={key}
-            className={`flex items-center gap-4 rounded-2xl border p-4 transition ${
+            className={`flex items-center gap-3 rounded-2xl border p-3.5 transition sm:gap-4 sm:p-4 ${
               settings[key] ? 'border-zinc-800 bg-zinc-900/60' : 'border-zinc-800/50 bg-zinc-900/30 opacity-60'
             }`}
           >

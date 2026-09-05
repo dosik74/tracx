@@ -45,20 +45,21 @@ export default function CalendarTab({ tasks, onToggle, onUpdate, onRemove }: Pro
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-5">
-      <h1 className="text-2xl font-bold text-zinc-100">Календарь</h1>
+    <div className="mx-auto w-full max-w-4xl space-y-4 sm:space-y-5">
+      <h1 className="text-xl font-bold text-zinc-100 sm:text-2xl">Календарь</h1>
 
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4">
-        <div className="mb-4 flex items-center justify-between">
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3 sm:p-4">
+        <div className="mb-3 flex items-center justify-between gap-1 sm:mb-4">
           <button
             onClick={() => shift(-1)}
-            className="rounded-lg p-2 text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-100"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-100 active:scale-95"
             title="Предыдущий месяц"
+            aria-label="Предыдущий месяц"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <div className="flex items-center gap-3">
-            <span className="min-w-40 text-center text-lg font-semibold text-zinc-100">
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
+            <span className="truncate text-center text-base font-semibold text-zinc-100 sm:text-lg">
               {monthLabel(year, month)}
             </span>
             <select
@@ -88,22 +89,24 @@ export default function CalendarTab({ tasks, onToggle, onUpdate, onRemove }: Pro
                 setYear(now.getFullYear());
                 setMonth(now.getMonth());
               }}
-              className="rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-200"
+              className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-200 active:scale-95"
               title="Текущий месяц"
+              aria-label="Текущий месяц"
             >
               <RotateCcw className="h-4 w-4" />
             </button>
           </div>
           <button
             onClick={() => shift(1)}
-            className="rounded-lg p-2 text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-100"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-100 active:scale-95"
             title="Следующий месяц"
+            aria-label="Следующий месяц"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="grid grid-cols-7 gap-1 text-center">
+        <div className="grid grid-cols-7 gap-0.5 text-center sm:gap-1">
           {Array.from({ length: 7 }, (_, i) => (
             <div key={i} className="pb-2 text-xs font-medium text-zinc-500">
               {weekdayShort(i)}
@@ -121,7 +124,7 @@ export default function CalendarTab({ tasks, onToggle, onUpdate, onRemove }: Pro
               <button
                 key={iso}
                 onClick={() => setSelected(isSelected ? null : iso)}
-                className={`flex aspect-square flex-col items-center justify-center gap-0.5 rounded-xl border text-sm transition ${
+                className={`flex aspect-square min-h-[44px] flex-col items-center justify-center gap-0.5 rounded-lg border text-sm transition active:scale-95 sm:rounded-xl ${
                   isSelected
                     ? 'border-emerald-500 bg-emerald-500/15 text-emerald-300'
                     : isToday

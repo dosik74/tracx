@@ -27,13 +27,13 @@ function Shell() {
     switch (tab) {
       case 'tasks':
         return (
-          <div className="flex min-h-full items-center justify-center">
-            <div className="w-full max-w-3xl space-y-8">
-              <div className="space-y-4">
-                <h1 className="font-monplesir text-center text-8xl font-normal tracking-wide text-zinc-100 [text-shadow:0_6px_32px_rgba(0,0,0,1)] md:text-9xl">
+          <div className="mx-auto flex min-h-full w-full max-w-3xl items-center justify-center px-1 py-6">
+            <div className="w-full space-y-6 sm:space-y-8">
+              <div className="space-y-3 sm:space-y-4">
+                <h1 className="font-monplesir text-center text-6xl font-normal tracking-wide text-zinc-100 [text-shadow:0_6px_32px_rgba(0,0,0,1)] sm:text-8xl md:text-9xl">
                   tracx
                 </h1>
-                <p className="text-center text-base text-zinc-500">
+                <p className="px-4 text-center text-sm text-zinc-500 sm:text-base">
                   Опишите задачу или вставьте сообщение клиента
                 </p>
               </div>
@@ -74,11 +74,13 @@ function Shell() {
   };
 
   return (
-    <div className={`flex h-screen bg-zinc-950 text-zinc-100 ${settings.allEnabled ? 'anim-all' : ''}`}>
+    <div className={`flex h-dvh flex-col overflow-hidden bg-zinc-950 text-zinc-100 md:flex-row ${settings.allEnabled ? 'anim-all' : ''}`}>
       <Sidebar tab={tab} onChange={setTab} onExport={() => exportBackup(tasks)} />
-      <main key={tab} className={`flex-1 overflow-y-auto p-4 md:p-8 ${settings.tabTransition ? 'anim-tab-in' : ''}`}>
-        {content()}
-      </main>
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-28 pt-4 md:p-8 md:pb-8">
+        <main key={tab} className={`mx-auto w-full max-w-3xl ${settings.tabTransition ? 'anim-tab-in' : ''}`}>
+          {content()}
+        </main>
+      </div>
     </div>
   );
 }

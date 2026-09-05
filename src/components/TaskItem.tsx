@@ -41,7 +41,7 @@ export default function TaskItem({ task, onToggle, onUpdate, onRemove }: Props) 
 
   return (
     <li
-      className={`group relative overflow-hidden rounded-2xl border bg-zinc-900/70 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/40 ${
+      className={`group relative overflow-hidden rounded-2xl border bg-zinc-900/70 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/40 sm:p-5 ${
         removing && settings.removeFlash ? 'anim-remove-out' : ''
       } ${settings.taskAppear ? 'anim-task-in' : ''} ${
         task.done
@@ -57,13 +57,13 @@ export default function TaskItem({ task, onToggle, onUpdate, onRemove }: Props) 
         }`}
       />
 
-      <div className="flex items-start gap-4 pl-2">
+      <div className="flex items-start gap-3 pl-1 sm:gap-4 sm:pl-2">
         <button
           onClick={() => onToggle(task.id)}
-          className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border-2 transition-all duration-200 ${
+          className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 transition-all duration-200 active:scale-95 sm:h-7 sm:w-7 ${
             task.done
               ? 'border-emerald-500 bg-emerald-500 text-zinc-950 shadow-[0_0_16px_rgba(16,185,129,0.35)]'
-              : 'border-zinc-600 hover:border-emerald-400 hover:scale-110 active:scale-95'
+              : 'border-zinc-600 hover:border-emerald-400 sm:hover:scale-110 sm:active:scale-95'
           }`}
           aria-label={task.done ? 'Отменить выполнение' : 'Отметить выполненной'}
         >
@@ -82,28 +82,29 @@ export default function TaskItem({ task, onToggle, onUpdate, onRemove }: Props) 
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && save()}
               autoFocus
               rows={2}
-              className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-base text-zinc-100 outline-none focus:border-emerald-500"
+              className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-base text-zinc-100 outline-none focus:border-emerald-500"
             />
             <div className="flex flex-wrap items-center gap-2">
               <input
                 type="date"
                 value={date}
                 onChange={e => e.target.value && setDate(e.target.value)}
-                className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300 outline-none [color-scheme:dark] focus:border-emerald-500"
+                aria-label="Дата задачи"
+                className="min-h-[44px] rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-300 outline-none [color-scheme:dark] focus:border-emerald-500"
               />
-              <label className="flex cursor-pointer items-center gap-2 rounded-xl bg-zinc-800/70 px-3 py-1.5 text-sm text-zinc-300">
+              <label className="flex min-h-[44px] cursor-pointer items-center gap-2 rounded-xl bg-zinc-800/70 px-3 py-2 text-sm text-zinc-300">
                 <input
                   type="checkbox"
                   checked={task.done}
                   onChange={e => onUpdate(task.id, { done: e.target.checked })}
-                  className="h-4 w-4 accent-emerald-500"
+                  className="h-5 w-5 accent-emerald-500"
                 />
                 выполнена
               </label>
-              <div className="ml-auto flex gap-2">
+              <div className="flex w-full gap-2 sm:ml-auto sm:w-auto">
                 <button
                   onClick={save}
-                  className="flex items-center gap-1.5 rounded-xl bg-emerald-500/15 px-4 py-1.5 text-sm font-medium text-emerald-400 transition hover:bg-emerald-500/25"
+                  className="flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-emerald-500/15 px-4 py-2.5 text-sm font-medium text-emerald-400 transition hover:bg-emerald-500/25 active:scale-95 sm:flex-none"
                 >
                   <Check className="h-4 w-4" /> Сохранить
                 </button>
@@ -113,7 +114,8 @@ export default function TaskItem({ task, onToggle, onUpdate, onRemove }: Props) 
                     setDate(task.date);
                     setEditing(false);
                   }}
-                  className="rounded-xl p-2 text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200"
+                  aria-label="Отменить редактирование"
+                  className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200 active:scale-95"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -124,14 +126,14 @@ export default function TaskItem({ task, onToggle, onUpdate, onRemove }: Props) 
           <>
             <div className="min-w-0 flex-1">
             <p
-              className={`break-words whitespace-pre-wrap text-[17px] leading-relaxed font-medium transition-all duration-300 ${
+              className={`break-words whitespace-pre-wrap text-base leading-relaxed font-medium transition-all duration-300 ${
                 task.done ? 'text-zinc-500 line-through decoration-emerald-500/50' : 'text-zinc-100'
               } ${task.done && settings.blurCompleted ? 'blur-sm hover:blur-none select-none' : ''}`}
             >
               {task.text}
             </p>
               <span
-                className={`mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                className={`mt-2.5 inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors sm:mt-3 ${
                   task.done
                     ? 'bg-emerald-500/10 text-emerald-400'
                     : 'bg-zinc-800/80 text-zinc-400'
@@ -152,20 +154,23 @@ export default function TaskItem({ task, onToggle, onUpdate, onRemove }: Props) 
                 )}
               </span>
             </div>
-            <div className="flex shrink-0 gap-1 opacity-0 transition group-hover:opacity-100">
+            {/* Кнопки всегда видны на тачскрине, на десктопе — по ховеру */}
+            <div className="flex shrink-0 gap-0.5 opacity-100 transition md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
               <button
                 onClick={() => setEditing(true)}
-                className="rounded-xl p-2 text-zinc-500 transition hover:bg-zinc-800 hover:text-zinc-200 active:scale-90"
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200 active:scale-90"
                 title="Редактировать"
+                aria-label="Редактировать задачу"
               >
-                <Pencil className="h-4.5 w-4.5" />
+                <Pencil className="h-5 w-5" />
               </button>
               <button
                 onClick={handleRemove}
-                className="rounded-xl p-2 text-zinc-500 transition hover:bg-red-500/15 hover:text-red-400 active:scale-90"
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2.5 text-zinc-400 transition hover:bg-red-500/15 hover:text-red-400 active:scale-90"
                 title="Удалить"
+                aria-label="Удалить задачу"
               >
-                <Trash2 className="h-4.5 w-4.5" />
+                <Trash2 className="h-5 w-5" />
               </button>
             </div>
           </>
